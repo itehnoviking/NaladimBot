@@ -14,6 +14,6 @@ public class NumberProfile : Profile
 
         CreateMap<Number, NumberDto>();
 
-        CreateMap<FillState, NewNumberDto>();
+        CreateMap<FillStateNewNumber, NewNumberDto>();
     }
 }

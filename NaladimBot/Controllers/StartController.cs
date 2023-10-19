@@ -24,7 +24,9 @@ public class StartController : BotController
             PushL("This bot allow you adding a recurring reminder to chat");
             PushL();
 
-            RowKButton("/add");
+            RowKButton("Добавить номер");
+            RowKButton("Найти номер по имени");
+            RowKButton("Найти номер по фрагменту имени");
         }
 
         else
