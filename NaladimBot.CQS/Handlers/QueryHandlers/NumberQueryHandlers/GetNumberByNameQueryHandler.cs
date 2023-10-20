@@ -22,7 +22,7 @@ public class GetNumberByNameQueryHandler : IRequestHandler<GetNumberByNameQuery,
     {
         var number = await _database.Numbers
             .AsNoTracking()
-            .Where(a => a.Name.Equals(request.Name))
+            .Where(a => a.NamesNumber.Equals(request.Name))
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         return _mapper.Map<NumberDto>(number);

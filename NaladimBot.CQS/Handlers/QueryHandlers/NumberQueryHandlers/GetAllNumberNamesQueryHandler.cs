@@ -16,9 +16,9 @@ public class GetAllNumberNamesQueryHandler : IRequestHandler<GetAllNumberNamesQu
 
     public async Task<IList<string>> Handle(GetAllNumberNamesQuery request, CancellationToken cancellationToken)
     {
-        var numbersName = await _database.Numbers
+        var numbersName = await _database.Names
             .AsNoTracking()
-            .Select(a => a.Name)
+            .Select(a => a.NameNumber)
             .ToArrayAsync(cancellationToken: cancellationToken);
         
 

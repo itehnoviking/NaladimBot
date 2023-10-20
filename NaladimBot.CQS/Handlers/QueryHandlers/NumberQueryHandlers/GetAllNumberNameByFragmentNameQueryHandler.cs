@@ -16,10 +16,10 @@ public class GetAllNumberNameByFragmentNameQueryHandler : IRequestHandler<GetAll
 
     public async Task<IList<string>> Handle(GetAllNumberNameByFragmentNameQuery request, CancellationToken cancellationToken)
     {
-        var nameList = await _database.Numbers
+        var nameList = await _database.Names
             .AsNoTracking()
-            .Select(a => a.Name)
-            .Where(a => a.Contains(request.FragmentName))
+            .Select(a => a.NameNumber)
+            .Where(n => n.Contains(request.FragmentName))
             .ToArrayAsync(cancellationToken: cancellationToken);
 
         return nameList;
