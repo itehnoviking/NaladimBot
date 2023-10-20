@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using NaladimBot.Core.DTOs;
+using NaladimBot.Data.Entities;
 
 namespace NaladimBot.CQS.Models.Commands.NumberCommands;
 
@@ -8,7 +9,7 @@ public class CreateNumberCommand : IRequest<bool>
     public CreateNumberCommand(NewNumberDto dto)
     {
         Id = dto.Id;
-        Name = dto.Name;
+        NamesNumber = dto.NamesNumber;
         Mashine = dto.Mashine;
         StampPhoto = dto.StampPhoto;
         ReadyNumberPhoto = dto.ReadyNumberPhoto;
@@ -17,7 +18,7 @@ public class CreateNumberCommand : IRequest<bool>
     }
 
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public List<NameDto> NamesNumber { get; set; }
     public string Mashine { get; set; }
     public byte[] StampPhoto { get; set; }
     public byte[] ReadyNumberPhoto { get; set; }

@@ -15,5 +15,7 @@ public class NumberProfile : Profile
         CreateMap<Number, NumberDto>();
 
         CreateMap<FillStateNewNumber, NewNumberDto>();
+
+        CreateMap<NameDto, Name>().ReverseMap();
     }
 }

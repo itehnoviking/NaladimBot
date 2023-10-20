@@ -11,6 +11,7 @@ public class NaladimBotContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Number> Numbers { get; set; }
+    public DbSet<Name> Names { get; set; }
 
 
 }

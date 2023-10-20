@@ -33,7 +33,7 @@ namespace NaladimBot.Controllers
         {
             PushL("Fill data of the new number");
 
-            RowButton(string.IsNullOrEmpty(state.Name) ? $"Set or update name" : "Name: " + state.Name,
+            RowButton(state.NamesNumber == null ? $"Set or update name" : "Name ✅",
                 Q(Fill_NameNumber));
             RowButton(string.IsNullOrEmpty(state.Mashine) ? "Set or update mashine" : "Mashine: " + state.Mashine,
                 Q(Fill_PeekMashine, 0));
@@ -163,7 +163,7 @@ namespace NaladimBot.Controllers
         async ValueTask Fill_StateNameNumber(SetNameNumberState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
-            fillState = fillState with { Name = Context.GetSafeTextPayload() };
+            fillState = fillState with { NamesNumber = new List<NameDto>{ new NameDto(){NameNumber = Context.GetSafeTextPayload()} }};
             await AState(fillState);
             FillNewNumber(fillState);
         }

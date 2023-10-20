@@ -10,4 +10,8 @@
     <PackageReference Include="Deployf.Botf" Version="0.17.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NaladkaBot.Data\NaladimBot.Data.csproj" />
+  </ItemGroup>
+
 </Project>
