@@ -11,7 +11,7 @@ BotfProgram.StartBot(args, onConfigure: (svc, cfg) =>
     var connectionString = cfg.GetConnectionString("DefaultConnection");
 
     svc.AddDbContext<NaladimBotContext>(opt
-        => opt.UseSqlServer(connectionString));
+        => opt.UseNpgsql(connectionString));
 
 
     svc.AddScoped<INumberService, NumberService>();

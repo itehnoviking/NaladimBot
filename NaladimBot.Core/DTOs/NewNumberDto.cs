@@ -4,7 +4,6 @@ namespace NaladimBot.Core.DTOs;
 
 public class NewNumberDto
 {
-    public Guid Id { get; set; }
     public List<NameDto> NamesNumber { get; set; }
     public string Mashine { get; set; }
     public byte[]? StampPhoto { get; set; }

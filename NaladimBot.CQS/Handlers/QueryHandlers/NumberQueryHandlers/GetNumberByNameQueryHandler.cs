@@ -20,9 +20,10 @@ public class GetNumberByNameQueryHandler : IRequestHandler<GetNumberByNameQuery,
 
     public async Task<NumberDto> Handle(GetNumberByNameQuery request, CancellationToken cancellationToken)
     {
-        var number = await _database.Numbers
+        var number = await _database.Names
             .AsNoTracking()
-            .Where(a => a.NamesNumber.Equals(request.Name))
+            .Where(a => a.NameNumber.Equals(request.Name))
+            .Select(n => n.Number)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         return _mapper.Map<NumberDto>(number);

@@ -59,7 +59,12 @@ namespace NaladimBot.Controllers
             
             await Client.SendTextMessageAsync(chatId, number.Mashine);
             await _imageService.SendImageAsync(chatId, number.TechnicalProcessPhoto, Context);
-            await _imageService.SendImageAsync(chatId, number.StampPhoto, Context);
+
+            if (number.StampPhoto.Any())
+            {
+                await _imageService.SendImageAsync(chatId, number.StampPhoto, Context);
+            }
+            
             await _imageService.SendImageAsync(chatId, number.ReadyNumberPhoto, Context);
             await Client.SendTextMessageAsync(chatId, number.Comment);
         }

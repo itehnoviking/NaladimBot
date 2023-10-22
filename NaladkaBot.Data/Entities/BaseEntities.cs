@@ -1,7 +1,9 @@
-﻿namespace NaladimBot.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace NaladimBot.Data.Entities;
 
 public class BaseEntities
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
 }

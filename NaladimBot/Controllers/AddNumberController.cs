@@ -31,26 +31,26 @@ namespace NaladimBot.Controllers
         [Action]
         async ValueTask FillNewNumber([State] FillStateNewNumber state)
         {
-            PushL("Fill data of the new number");
+            PushL("Заполните данные номера");
 
-            RowButton(state.NamesNumber == null ? $"Set or update name" : "Name ✅",
+            RowButton(state.NamesNumber == null ? $"Имя номера" : "Имя номера ✅",
                 Q(Fill_NameNumber));
-            RowButton(string.IsNullOrEmpty(state.Mashine) ? "Set or update mashine" : "Mashine: " + state.Mashine,
+            RowButton(string.IsNullOrEmpty(state.Mashine) ? "Оборудование" : "Оборудование: " + state.Mashine,
                 Q(Fill_PeekMashine, 0));
-            RowButton(state.StampPhoto == null ? "Set or update stamp photo" : "Stamp Photo ✅",
+            RowButton(state.StampPhoto == null ? "Фото штампа" : "Фото штампа ✅",
                 Q(Fill_StampPhoto));
             RowButton(state.ReadyNumberPhoto == null
-                    ? "Set or update ready number photo"
-                    : "Ready Number Photo ✅", Q(Fill_ReadyNumberPhoto));
+                    ? "Фото готовой детали"
+                    : "Фото готовой детали ✅", Q(Fill_ReadyNumberPhoto));
             RowButton(state.TechnicalProcessPhoto == null
-                    ? "Set or update technical process photo"
-                    : "Technical Process Photo ✅", Q(Fill_TechnicalProcessPhoto));
-            RowButton(string.IsNullOrEmpty(state.Comment) ? "Set or update comment" : "Comment: " + state.Comment,
+                    ? "Фото технического процесса"
+                    : "Фото технического процесса ✅", Q(Fill_TechnicalProcessPhoto));
+            RowButton(string.IsNullOrEmpty(state.Comment) ? "Комментарий" : "Комментарий: " + state.Comment,
                 Q(Fill_Comment));
 
             if (state.IsSet)
             {
-                RowButton("Schedule", Q(Fill, ""));
+                RowButton("Сохранить", Q(Fill, ""));
             }
         }
 
@@ -59,20 +59,20 @@ namespace NaladimBot.Controllers
         {
             await _numberService.CreateAsync(_mapper.Map<NewNumberDto>(state));
 
-            PushL("✅ added");
+            PushL("Добавлено ✅");
         }
 
 
         [Action]
         async ValueTask Fill_PeekMashine(Mashine mashines)
         {
-            Push("Peek mashine");
+            Push("Выберете оборудование");
 
             new FlagMessageBuilder<Mashine>(mashines)
                 .Navigation(s => Q(Fill_PeekMashine, s))
                 .Build(Message);
 
-            RowButton("Done ✅", Q(Fill_SetMashine, mashines, ""));
+            RowButton("Выбрать ✅", Q(Fill_SetMashine, mashines, ""));
         }
 
         [Action]
@@ -86,7 +86,7 @@ namespace NaladimBot.Controllers
         [Action]
         async ValueTask Fill_TechnicalProcessPhoto()
         {
-            Push("Add technical process photo this number");
+            Push("Добавьте фото технического процесса");
 
             await State(new SetTechnicalProcessPhotoState());
         }
@@ -94,7 +94,7 @@ namespace NaladimBot.Controllers
         [Action]
         async ValueTask Fill_ReadyNumberPhoto()
         {
-            Push("Add ready number photo this number");
+            Push("Добавьте фото готовой детали");
 
             await State(new SetReadyNumberPhotoState());
         }
@@ -102,7 +102,7 @@ namespace NaladimBot.Controllers
         [Action]
         async ValueTask Fill_NameNumber()
         {
-            Push("Enter the name of the new number");
+            Push("Введите имя номера");
             await State(new SetNameNumberState());
         }
 
@@ -110,14 +110,14 @@ namespace NaladimBot.Controllers
         async ValueTask Fill_Comment()
         {
             await State(new SetCommentState());
-            Push("Reply to this message with a comment");
+            Push("Напишите комментарий по поводу этого номера");
         }
 
         [Action]
         async ValueTask Fill_StampPhoto()
         {
             await State(new SetStampPhotoState());
-            Push("Add stamp photo this number");
+            Push("Добавьте фото штампа");
         }
 
         [State]
@@ -162,10 +162,34 @@ namespace NaladimBot.Controllers
         [State]
         async ValueTask Fill_StateNameNumber(SetNameNumberState state)
         {
+            
+
             var fillState = await GetAState<FillStateNewNumber>();
-            fillState = fillState with { NamesNumber = new List<NameDto>{ new NameDto(){NameNumber = Context.GetSafeTextPayload()} }};
+
+            if (!Context.Update.Message.Text.Contains(','))
+            {
+                fillState = fillState with { NamesNumber = new List<NameDto> { new NameDto() { NameNumber = Context.GetSafeTextPayload() } } };
+            }
+
+            else
+            {
+                var listNames = await _numberService.GetListNamesFromStr(Context.Update.Message.Text);
+
+                fillState.NamesNumber = new List<NameDto>();
+
+                foreach (var name in listNames)
+                {
+                    if (name.Contains(' '))
+                    {
+                        name.Remove(0);
+                    }
+
+                    fillState.NamesNumber.Add(new NameDto(){NameNumber = name });
+                }
+            }
+            
             await AState(fillState);
-            FillNewNumber(fillState);
+            await FillNewNumber(fillState);
         }
 
 
@@ -186,20 +210,5 @@ namespace NaladimBot.Controllers
         record SetStampPhotoState;
         record SetReadyNumberPhotoState;
         record SetTechnicalProcessPhotoState;
-
-
-        //private async Task<byte[]> GetImageBytesAsync(string fileId, IUpdateContext context)
-        //{
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        //FileToSend file = await botClient.GetFileAsync(fileId);
-        //        //await botClient.DownloadFileAsync(file.FilePath, stream);
-
-        //        var file = await Context.Bot.Client.GetFileAsync(fileId);
-        //        await Context.Bot.Client.DownloadFileAsync(file.FilePath, stream);
-
-        //        return stream.ToArray();
-        //    }
-        //}
     }
 }
