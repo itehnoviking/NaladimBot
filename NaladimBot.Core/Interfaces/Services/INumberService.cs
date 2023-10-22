@@ -8,4 +8,5 @@ public interface INumberService
     Task CreateAsync(NewNumberDto dto);
     Task<NumberDto> GetNumberByNameAsync(string name);
     Task<IList<string>> GetAllNumberNameByFragmentNameAsync(string fragmentName);
+    Task<IList<string>> GetListNamesFromStr(string names);
 }

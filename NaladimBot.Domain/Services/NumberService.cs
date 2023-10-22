@@ -52,5 +52,12 @@ public class NumberService : INumberService
         var list = await _mediator.Send(new GetAllNumberNameByFragmentNameQuery(fragmentName), new CancellationToken());
 
         return list;
-    }  
+    }
+
+    public async Task<IList<string>> GetListNamesFromStr(string names)
+    {
+        var listNames = names.Split(',').ToList();
+
+        return listNames;
+    }
 }
