@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaladimBot", "NaladimBot\NaladimBot.csproj", "{7E389B74-A2A6-4DF9-A6F5-EE6332EDF012}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaladimBot", "NaladimBot\NaladimBot.csproj", "{7E389B74-A2A6-4DF9-A6F5-EE6332EDF012}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{26FEA685-B496-46A0-A5EB-9DCABF50E39E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaladimBot.CQS", "NaladimBot.CQS\NaladimBot.CQS.csproj", "{F542C942-CFB0-469A-9D97-9E78B106F9A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaladimBot.CQS", "NaladimBot.CQS\NaladimBot.CQS.csproj", "{F542C942-CFB0-469A-9D97-9E78B106F9A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaladimBot.Data", "NaladkaBot.Data\NaladimBot.Data.csproj", "{61086535-CADD-41EC-AEB0-025CFE9F4A41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaladimBot.Data", "NaladkaBot.Data\NaladimBot.Data.csproj", "{61086535-CADD-41EC-AEB0-025CFE9F4A41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaladimBot.Core", "NaladimBot.Core\NaladimBot.Core.csproj", "{9692D43D-D982-4F87-8AE8-B34F9673C87A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaladimBot.Core", "NaladimBot.Core\NaladimBot.Core.csproj", "{9692D43D-D982-4F87-8AE8-B34F9673C87A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaladimBot.Domain", "NaladimBot.Domain\NaladimBot.Domain.csproj", "{EC9FCEE8-6D3D-4613-AAC8-D157EC9C0BE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaladimBot.Domain", "NaladimBot.Domain\NaladimBot.Domain.csproj", "{EC9FCEE8-6D3D-4613-AAC8-D157EC9C0BE2}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DDE7870E-3493-454A-85DF-A98D1E90B7B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{EC9FCEE8-6D3D-4613-AAC8-D157EC9C0BE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC9FCEE8-6D3D-4613-AAC8-D157EC9C0BE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC9FCEE8-6D3D-4613-AAC8-D157EC9C0BE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE7870E-3493-454A-85DF-A98D1E90B7B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE7870E-3493-454A-85DF-A98D1E90B7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE7870E-3493-454A-85DF-A98D1E90B7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE7870E-3493-454A-85DF-A98D1E90B7B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

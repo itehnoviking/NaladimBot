@@ -52,9 +52,9 @@ namespace NaladimBot.Controllers
             var chatId = Context.Update.Message.Chat.Id;
             var number = await _numberService.GetNumberByNameAsync(state.Name);
 
-            foreach (var nameDto in number.NamesNumber)
+            foreach (var nameDto in number.Names)
             {
-                await Client.SendTextMessageAsync(chatId, nameDto.NameNumber);
+                await Client.SendTextMessageAsync(chatId, nameDto.Name);
             }
             
             await Client.SendTextMessageAsync(chatId, number.Mashine);

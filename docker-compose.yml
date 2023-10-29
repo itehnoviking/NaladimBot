@@ -1,0 +1,66 @@
+version: '3.4'
+
+services:
+  naladimbot:
+    image: ${DOCKER_REGISTRY-}naladimbot
+    build:
+      context: .
+      dockerfile: NaladimBot/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - mynetwork  
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 23r2323ffsedsEGDS#%23EAF
+      POSTGRES_DB: NaladimBot.Database
+    volumes:
+      - db:/var/lib/postgresql/
+    networks:
+      - mynetwork
+
+volumes: 
+  db: 
+
+networks:
+  mynetwork:
+    driver: bridge
+
+   
+  
+
+# services:
+#   naladimbot:
+#     image: ${DOCKER_REGISTRY-}naladimbot
+#     build:
+#       context: .
+#       dockerfile: NaladimBot/Dockerfile
+#     ports:
+#      - "80:80"
+#     networks:
+#      - naladimbot
+#     depends_on:
+#      - postgres_db
+#   postgres_db:
+#    container_name: postgres
+#    image: postgres:latest
+
+#    environment:
+#     POSTGRES_USER: postgres
+#     POSTGRES_PASSWORD: 23r2323ffsedsEGDS#%23EAF
+#     POSTGRES_DB: NaladimBot.Database
+#    ports:
+#    - "5432:5432"
+#    networks: 
+#    - naladimbot
+#    volumes:
+#    - postgres-data:/var/lib/postgresql/
+   
+# volumes: 
+#   postgres-data:
