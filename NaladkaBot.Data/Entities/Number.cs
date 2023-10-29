@@ -8,5 +8,5 @@ public class Number : BaseEntities
     public byte[] TechnicalProcessPhoto { get; set; }
     public string Comment { get; set; }
 
-    public virtual IEnumerable<Name> NamesNumber { get; set; }
+    public virtual IEnumerable<Name> Names { get; set; }
 }

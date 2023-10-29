@@ -16,6 +16,8 @@ public class NumberProfile : Profile
 
         CreateMap<FillStateNewNumber, NewNumberDto>();
 
-        CreateMap<NameDto, Name>().ReverseMap();
+        CreateMap<NameDto, Name>()
+            .ForMember(ent => ent.NameNumber, dto => dto.MapFrom(item => item.Name))
+            .ReverseMap();
     }
 }

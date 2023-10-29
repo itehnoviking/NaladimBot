@@ -8,7 +8,7 @@ public class CreateNumberCommand : IRequest<bool>
 {
     public CreateNumberCommand(NewNumberDto dto)
     {
-        NamesNumber = dto.NamesNumber;
+        Names = dto.Names;
         Mashine = dto.Mashine;
         StampPhoto = dto.StampPhoto;
         ReadyNumberPhoto = dto.ReadyNumberPhoto;
@@ -16,7 +16,7 @@ public class CreateNumberCommand : IRequest<bool>
         Comment = dto.Comment;
     }
     
-    public List<NameDto> NamesNumber { get; set; }
+    public List<NameDto> Names { get; set; }
     public string Mashine { get; set; }
     public byte[]? StampPhoto { get; set; }
     public byte[] ReadyNumberPhoto { get; set; }

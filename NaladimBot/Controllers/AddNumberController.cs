@@ -33,7 +33,7 @@ namespace NaladimBot.Controllers
         {
             PushL("Заполните данные номера");
 
-            RowButton(state.NamesNumber == null ? $"Имя номера" : "Имя номера ✅",
+            RowButton(state.Names == null ? $"Имя номера" : "Имя номера ✅",
                 Q(Fill_NameNumber));
             RowButton(string.IsNullOrEmpty(state.Mashine) ? "Оборудование" : "Оборудование: " + state.Mashine,
                 Q(Fill_PeekMashine, 0));
@@ -168,23 +168,18 @@ namespace NaladimBot.Controllers
 
             if (!Context.Update.Message.Text.Contains(','))
             {
-                fillState = fillState with { NamesNumber = new List<NameDto> { new NameDto() { NameNumber = Context.GetSafeTextPayload() } } };
+                fillState = fillState with { Names = new List<NameDto> { new NameDto() { Name = Context.GetSafeTextPayload() } } };
             }
 
             else
             {
                 var listNames = await _numberService.GetListNamesFromStr(Context.Update.Message.Text);
 
-                fillState.NamesNumber = new List<NameDto>();
+                fillState.Names = new List<NameDto>();
 
                 foreach (var name in listNames)
                 {
-                    if (name.Contains(' '))
-                    {
-                        name.Remove(0);
-                    }
-
-                    fillState.NamesNumber.Add(new NameDto(){NameNumber = name });
+                    fillState.Names.Add(new NameDto(){Name = name });
                 }
             }
             

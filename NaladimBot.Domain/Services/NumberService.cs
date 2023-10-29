@@ -58,6 +58,14 @@ public class NumberService : INumberService
     {
         var listNames = names.Split(',').ToList();
 
+        foreach (var name in listNames)
+        {
+            if (name.Contains(' '))
+            {
+                name.Remove(0);
+            }
+        }
+
         return listNames;
     }
 }

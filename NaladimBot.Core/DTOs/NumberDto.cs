@@ -2,7 +2,7 @@
 
 public class NumberDto
 {
-    public List<NameDto> NamesNumber { get; set; }
+    public List<NameDto> Names { get; set; }
     public string Mashine { get; set; }
     public byte[]? StampPhoto { get; set; }
     public byte[] ReadyNumberPhoto { get; set; }

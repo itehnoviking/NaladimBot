@@ -6,9 +6,13 @@ namespace NaladimBot.Data;
 
 public class NaladimBotContext : DbContext
 {
-    public NaladimBotContext(DbContextOptions options) : base(options)
+    private readonly IConfiguration _configuration;
+
+    public NaladimBotContext(DbContextOptions options, IConfiguration configuration) : base(options)
     {
-        
+        _configuration = configuration;
+        Database.EnsureCreated();
+
     }
 
     public DbSet<User> Users { get; set; }
