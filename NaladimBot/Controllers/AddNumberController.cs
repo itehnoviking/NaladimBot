@@ -5,6 +5,8 @@ using NaladimBot.Core.Interfaces.Services;
 using NaladimBot.Models;
 using Telegram.Bot;
 using Telegram.Bot.Framework.Abstractions;
+using NaladimBot.Domain.Services;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace NaladimBot.Controllers
 {
@@ -13,19 +15,43 @@ namespace NaladimBot.Controllers
         private readonly INumberService _numberService;
         private readonly IMapper _mapper;
         private readonly IImageService _imageService;
+        private readonly IUserService _userService;
+        private readonly IMemoryCache _cache;
 
-        public AddNumberController(INumberService numberService, IMapper mapper, IImageService imageService)
+        public AddNumberController(INumberService numberService, IMapper mapper, IImageService imageService, IUserService userService, IMemoryCache cache)
         {
             _numberService = numberService;
             _mapper = mapper;
             _imageService = imageService;
+            _userService = userService;
+            _cache = cache;
         }
 
 
         [Action("Добавить номер", "add a number")]
         public async ValueTask Add()
         {
-            await FillNewNumber(await GetAState<FillStateNewNumber>());
+            var userId = Context.Update.Message.From.Id;
+
+            _cache.TryGetValue(userId, out bool? isAdmin);
+
+            if (isAdmin == null)
+            {
+                isAdmin = await _userService.IsAdminThisUserByUserIdAsync(userId);
+
+                if (isAdmin != null)
+                {
+                    _cache.Set(userId, isAdmin,
+                        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+
+                    ResponseMessagesByAddNumber(isAdmin);
+                }
+            }
+
+            else
+            {
+                ResponseMessagesByAddNumber(isAdmin);
+            }
         }
 
         [Action]
@@ -37,8 +63,10 @@ namespace NaladimBot.Controllers
                 Q(Fill_NameNumber));
             RowButton(string.IsNullOrEmpty(state.Mashine) ? "Оборудование" : "Оборудование: " + state.Mashine,
                 Q(Fill_PeekMashine, 0));
-            RowButton(state.StampPhoto == null ? "Фото штампа" : "Фото штампа ✅",
-                Q(Fill_StampPhoto));
+            RowButton(state.StampPhotoOne == null ? "Фото штампа" : "Фото штампа ✅",
+                Q(Fill_StampPhotoOne));
+            RowButton(state.StampPhotoTwo == null ? "Фото штампа" : "Фото штампа ✅",
+                Q(Fill_StampPhotoTwo));
             RowButton(state.ReadyNumberPhoto == null
                     ? "Фото готовой детали"
                     : "Фото готовой детали ✅", Q(Fill_ReadyNumberPhoto));
@@ -114,9 +142,16 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill_StampPhoto()
+        async ValueTask Fill_StampPhotoOne()
         {
-            await State(new SetStampPhotoState());
+            await State(new SetStampPhotoOneState());
+            Push("Добавьте фото штампа");
+        }
+
+        [Action]
+        async ValueTask Fill_StampPhotoTwo()
+        {
+            await State(new SetStampPhotoTwoState());
             Push("Добавьте фото штампа");
         }
 
@@ -147,12 +182,25 @@ namespace NaladimBot.Controllers
         }
 
         [State]
-        async ValueTask Fill_StateStampPhoto(SetStampPhotoState state)
+        async ValueTask Fill_StateStampPhotoOne(SetStampPhotoOneState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
             fillState = fillState with
             {
-                StampPhoto = await _imageService.GetImageBytesAsync(Context.Update.Message.Photo[3].FileId, Context)
+                StampPhotoOne = await _imageService.GetImageBytesAsync(Context.Update.Message.Photo[3].FileId, Context)
+
+            };
+            await AState(fillState);
+            await FillNewNumber(fillState);
+        }
+
+        [State]
+        async ValueTask Fill_StateStampPhotoTwo(SetStampPhotoTwoState state)
+        {
+            var fillState = await GetAState<FillStateNewNumber>();
+            fillState = fillState with
+            {
+                StampPhotoTwo = await _imageService.GetImageBytesAsync(Context.Update.Message.Photo[3].FileId, Context)
 
             };
             await AState(fillState);
@@ -202,8 +250,23 @@ namespace NaladimBot.Controllers
 
         record SetCommentState;
         record SetNameNumberState;
-        record SetStampPhotoState;
+        record SetStampPhotoOneState;
+        record SetStampPhotoTwoState;
         record SetReadyNumberPhotoState;
         record SetTechnicalProcessPhotoState;
+
+        private async void ResponseMessagesByAddNumber(bool? isAdmin)
+        {
+            if (isAdmin == true)
+            {
+                await FillNewNumber(await GetAState<FillStateNewNumber>());
+            }
+
+            else
+            {
+
+                PushL("You shall not pass!!");
+            }
+        }
     }
 }

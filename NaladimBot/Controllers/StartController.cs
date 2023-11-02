@@ -1,5 +1,11 @@
 ﻿using Deployf.Botf;
 using NaladimBot.Core.Interfaces.Services;
+using System.IO;
+using System.Security.Cryptography.Xml;
+using Microsoft.Extensions.Caching.Memory;
+using Telegram.Bot;
+using Telegram.Bot.Types.InputFiles;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace NaladimBot.Controllers;
@@ -7,21 +13,45 @@ namespace NaladimBot.Controllers;
 public class StartController : BotController
 {
     private readonly IUserService _userService;
+    private readonly IMemoryCache _cache;
 
-    public StartController(IUserService userService)
+    public StartController(IUserService userService, IMemoryCache cache)
     {
         _userService = userService;
+        _cache = cache;
     }
 
     [Action("/start")]
     public async Task Start()
     {
-        var isAdmin = await _userService.IsAdminThisUserByChatIdAsync(Context.Update.Message.Chat.Id);
+        var userId = Context.Update.Message.From.Id;
 
+        _cache.TryGetValue(userId, out bool? isAdmin);
+
+        if (isAdmin == null)
+        {
+            isAdmin = await _userService.IsAdminThisUserByUserIdAsync(userId);
+
+            if (isAdmin != null)
+            {
+                _cache.Set(userId, isAdmin,
+                    new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+
+                ResponseMessagesByStart(isAdmin);
+            }
+        }
+
+        else
+        {
+            ResponseMessagesByStart(isAdmin);
+        }
+    }
+
+    private void ResponseMessagesByStart(bool? isAdmin)
+    {
         if (isAdmin == true)
         {
             PushL("Hello!");
-            PushL("This bot allow you adding a recurring reminder to chat");
             PushL();
 
             RowKButton("Добавить номер");
@@ -33,9 +63,6 @@ public class StartController : BotController
         {
             PushL("You shall not pass!!");
         }
-
-
-        //RowButton("Найти номер", "/add");
     }
 
 }

@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 namespace NaladimBot.CQS.Handlers.QueryHandlers.UserQueryHandlers;
 
-public class IsAdminThisUserByChatIdQueryHandler : IRequestHandler<IsAdminThisUserByChatIdQuery, bool>
+public class IsAdminThisUserByChatIdQueryHandler : IRequestHandler<IsAdminThisUserByUserIdQuery, bool>
 {
     private readonly NaladimBotContext _database;
 
@@ -15,11 +15,11 @@ public class IsAdminThisUserByChatIdQueryHandler : IRequestHandler<IsAdminThisUs
         _database = database;
     }
 
-    public async Task<bool> Handle(IsAdminThisUserByChatIdQuery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(IsAdminThisUserByUserIdQuery request, CancellationToken cancellationToken)
     {
         return await _database.Users
             .AsNoTracking()
-            .Where(a => a.ChatId.Equals(request.ChatId))
+            .Where(a => a.UserId.Equals(request.UserId))
             .Select(a => a.IsAdmin)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 

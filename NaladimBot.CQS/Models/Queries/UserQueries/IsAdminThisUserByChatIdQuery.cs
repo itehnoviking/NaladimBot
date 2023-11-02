@@ -2,12 +2,12 @@
 
 namespace NaladimBot.CQS.Models.Queries.UserQueries;
 
-public class IsAdminThisUserByChatIdQuery : IRequest<bool>
+public class IsAdminThisUserByUserIdQuery : IRequest<bool>
 {
-    public IsAdminThisUserByChatIdQuery(long chatId)
+    public IsAdminThisUserByUserIdQuery(long userId)
     {
-        ChatId = chatId;
+        UserId = userId;
     }
 
-    public long ChatId { get; set; }
+    public long UserId { get; set; }
 }

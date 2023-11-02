@@ -3,5 +3,5 @@
 public interface IUserService
 {
     Task<long> GetUserChatIdAsync();
-    Task<bool> IsAdminThisUserByChatIdAsync(long chatId);
+    Task<bool> IsAdminThisUserByUserIdAsync(long chatId);
 }
