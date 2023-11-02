@@ -13,6 +13,8 @@ BotfProgram.StartBot(args, onConfigure: (svc, cfg) =>
     svc.AddDbContext<NaladimBotContext>(opt
         => opt.UseNpgsql(connectionString));
 
+    svc.AddMemoryCache();
+
 
     svc.AddScoped<INumberService, NumberService>();
     svc.AddScoped<IUserService, UserService>();

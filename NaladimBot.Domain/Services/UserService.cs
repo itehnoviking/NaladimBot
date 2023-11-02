@@ -20,11 +20,11 @@ public class UserService : IUserService
     
     public async Task<long> GetUserChatIdAsync()
     {
-        return await _mediator.Send(new GetUserChatIdQuery(), new CancellationToken());
+        return await _mediator.Send(new GetUserUserIdQuery(), new CancellationToken());
     }
 
-    public async Task<bool> IsAdminThisUserByChatIdAsync(long chatId)
+    public async Task<bool> IsAdminThisUserByUserIdAsync(long userId)
     {
-        return await _mediator.Send(new IsAdminThisUserByChatIdQuery(chatId), new CancellationToken());
+        return await _mediator.Send(new IsAdminThisUserByUserIdQuery(userId), new CancellationToken());
     }
 }

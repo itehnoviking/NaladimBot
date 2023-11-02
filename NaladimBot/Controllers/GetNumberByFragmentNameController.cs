@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Deployf.Botf;
+using Microsoft.Extensions.Caching.Memory;
 using NaladimBot.Core.DTOs;
 using NaladimBot.Core.Interfaces.Services;
+using NaladimBot.Domain.Services;
 using NaladimBot.Models;
 using System.Reflection.PortableExecutable;
 
@@ -11,21 +13,41 @@ public class GetNumberByFragmentNameController : BotController
 {
     private readonly INumberService _numberService;
     private readonly IMapper _mapper;
-    private readonly IImageService _imageService;
+    private readonly IUserService _userService;
+    private readonly IMemoryCache _cache;
 
-    public GetNumberByFragmentNameController(INumberService numberService, IMapper mapper, IImageService imageService)
+    public GetNumberByFragmentNameController(INumberService numberService, IMapper mapper, IUserService userService, IMemoryCache cache)
     {
         _numberService = numberService;
         _mapper = mapper;
-        _imageService = imageService;
+        _userService = userService;
+        _cache = cache;
     }
 
     [Action("Найти номер по фрагменту имени")]
     public async Task GetNumberListByFragmentName()
     {
-        await Fill_FragmentNameNumber();
+        var userId = Context.Update.Message.From.Id;
 
+        _cache.TryGetValue(userId, out bool? isAdmin);
 
+        if (isAdmin == null)
+        {
+            isAdmin = await _userService.IsAdminThisUserByUserIdAsync(userId);
+
+            if (isAdmin != null)
+            {
+                _cache.Set(userId, isAdmin,
+                    new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+
+                ResponseMessagesByGetNumberFragmentName(isAdmin);
+            }
+        }
+
+        else
+        {
+            ResponseMessagesByGetNumberFragmentName(isAdmin);
+        }
     }
 
     [Action]
@@ -58,4 +80,17 @@ public class GetNumberByFragmentNameController : BotController
     }
 
     record SetFragmentNameNumberState;
+
+    private async void ResponseMessagesByGetNumberFragmentName(bool? isAdmin)
+    {
+        if (isAdmin == true)
+        {
+            await Fill_FragmentNameNumber();
+        }
+
+        else
+        {
+            PushL("You shall not pass!!");
+        }
+    }
 }

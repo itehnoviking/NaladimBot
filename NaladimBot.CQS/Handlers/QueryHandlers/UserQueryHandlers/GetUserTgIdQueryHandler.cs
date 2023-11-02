@@ -5,7 +5,7 @@ using NaladimBot.Data;
 
 namespace NaladimBot.CQS.Handlers.QueryHandlers.UserQueryHandlers;
 
-public class GetUserChatIdQueryHandler : IRequestHandler<GetUserChatIdQuery, long>
+public class GetUserChatIdQueryHandler : IRequestHandler<GetUserUserIdQuery, long>
 {
     private readonly NaladimBotContext _database;
 
@@ -14,11 +14,11 @@ public class GetUserChatIdQueryHandler : IRequestHandler<GetUserChatIdQuery, lon
         _database = database;
     }
 
-    public async Task<long> Handle(GetUserChatIdQuery request, CancellationToken cancellationToken)
+    public async Task<long> Handle(GetUserUserIdQuery request, CancellationToken cancellationToken)
     {
         var chatId = await _database.Users
             .AsNoTracking()
-            .Select(u => u.ChatId)
+            .Select(u => u.UserId)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         return chatId;

@@ -24,13 +24,13 @@ services:
       - db:/var/lib/postgresql/
     networks:
       - mynetwork
+  
 
 volumes: 
   db: 
 
 networks:
   mynetwork:
-    driver: bridge
 
    
   
