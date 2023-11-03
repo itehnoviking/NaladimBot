@@ -43,18 +43,18 @@ namespace NaladimBot.Controllers
                     _cache.Set(userId, isAdmin,
                         new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
 
-                    ResponseMessagesByGetNumberName(isAdmin);
+                    await ResponseMessagesByGetNumberNameAsync(isAdmin);
                 }
             }
 
             else
             {
-                ResponseMessagesByGetNumberName(isAdmin);
+                await ResponseMessagesByGetNumberNameAsync(isAdmin);
             }
         }
 
         [Action]
-        async ValueTask Fill_NameNumber()
+        private async Task Fill_NameNumber()
         {
             PushL("Введите имя искомого номера!");
 
@@ -62,7 +62,7 @@ namespace NaladimBot.Controllers
         }
 
         [State]
-        async Task Fill_FragmentName(SetNameNumberState state)
+        private async Task Fill_FragmentName(SetNameNumberState state)
         {
             var fillState = await GetAState<FillStateGetNumberByName>();
             fillState = fillState with { Name = Context.Update.Message.Text };
@@ -71,7 +71,7 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill([State] FillStateGetNumberByName state)
+        private async Task Fill([State] FillStateGetNumberByName state)
         {
             var chatId = Context.Update.Message.Chat.Id;
             var number = await _numberService.GetNumberByNameAsync(state.Name);
@@ -103,7 +103,7 @@ namespace NaladimBot.Controllers
 
         record SetNameNumberState;
 
-        private async void ResponseMessagesByGetNumberName(bool? isAdmin)
+        private async Task ResponseMessagesByGetNumberNameAsync(bool? isAdmin)
         {
             if (isAdmin == true)
             {

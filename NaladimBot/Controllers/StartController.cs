@@ -37,17 +37,17 @@ public class StartController : BotController
                 _cache.Set(userId, isAdmin,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
 
-                ResponseMessagesByStart(isAdmin);
+                await ResponseMessagesByStartAsync(isAdmin);
             }
         }
 
         else
         {
-            ResponseMessagesByStart(isAdmin);
+            await ResponseMessagesByStartAsync(isAdmin);
         }
     }
 
-    private void ResponseMessagesByStart(bool? isAdmin)
+    private async Task ResponseMessagesByStartAsync(bool? isAdmin)
     {
         if (isAdmin == true)
         {
