@@ -40,18 +40,18 @@ public class GetNumberByFragmentNameController : BotController
                 _cache.Set(userId, isAdmin,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
 
-                ResponseMessagesByGetNumberFragmentName(isAdmin);
+                await ResponseMessagesByGetNumberFragmentNameAsync(isAdmin);
             }
         }
 
         else
         {
-            ResponseMessagesByGetNumberFragmentName(isAdmin);
+            await ResponseMessagesByGetNumberFragmentNameAsync(isAdmin);
         }
     }
 
     [Action]
-    async ValueTask Fill_FragmentNameNumber()
+    private async Task Fill_FragmentNameNumber()
     {
         PushL("Введите фрагмент имени искомого номера!");
 
@@ -59,7 +59,7 @@ public class GetNumberByFragmentNameController : BotController
     }
 
     [Action]
-    async ValueTask Fill([State] FillStateGetNumberByFragmentName state)
+    private async Task Fill([State] FillStateGetNumberByFragmentName state)
     {
         var list = await _numberService.GetAllNumberNameByFragmentNameAsync(state.FragmentName);
         PushL($"Найден {list.Count}!");
@@ -71,7 +71,7 @@ public class GetNumberByFragmentNameController : BotController
     }
 
     [State]
-    async Task Fill_FragmentName(SetFragmentNameNumberState state)
+    private async Task Fill_FragmentName(SetFragmentNameNumberState state)
     {
         var fillState = await GetAState<FillStateGetNumberByFragmentName>();
         fillState = fillState with { FragmentName = Context.Update.Message.Text };
@@ -81,7 +81,7 @@ public class GetNumberByFragmentNameController : BotController
 
     record SetFragmentNameNumberState;
 
-    private async void ResponseMessagesByGetNumberFragmentName(bool? isAdmin)
+    private async Task ResponseMessagesByGetNumberFragmentNameAsync(bool? isAdmin)
     {
         if (isAdmin == true)
         {

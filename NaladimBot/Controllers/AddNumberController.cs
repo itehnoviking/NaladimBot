@@ -29,7 +29,7 @@ namespace NaladimBot.Controllers
 
 
         [Action("Добавить номер", "add a number")]
-        public async ValueTask Add()
+        public async Task Add()
         {
             var userId = Context.Update.Message.From.Id;
 
@@ -44,18 +44,18 @@ namespace NaladimBot.Controllers
                     _cache.Set(userId, isAdmin,
                         new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
 
-                    ResponseMessagesByAddNumber(isAdmin);
+                    await ResponseMessagesByAddNumberAsync(isAdmin);
                 }
             }
 
             else
             {
-                ResponseMessagesByAddNumber(isAdmin);
+                await ResponseMessagesByAddNumberAsync(isAdmin);
             }
         }
 
         [Action]
-        async ValueTask FillNewNumber([State] FillStateNewNumber state)
+        private async Task FillNewNumber([State] FillStateNewNumber state)
         {
             PushL("Заполните данные номера");
 
@@ -83,7 +83,7 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill([State] FillStateNewNumber state)
+        private async Task Fill([State] FillStateNewNumber state)
         {
             await _numberService.CreateAsync(_mapper.Map<NewNumberDto>(state));
 
@@ -92,7 +92,7 @@ namespace NaladimBot.Controllers
 
 
         [Action]
-        async ValueTask Fill_PeekMashine(Mashine mashines)
+        private async Task Fill_PeekMashine(Mashine mashines)
         {
             Push("Выберете оборудование");
 
@@ -104,7 +104,7 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill_SetMashine(Mashine mashines, [State] FillStateNewNumber state)
+        private async Task Fill_SetMashine(Mashine mashines, [State] FillStateNewNumber state)
         {
             state = state with { Mashine = mashines.ToString() };
             await AState(state);
@@ -112,7 +112,7 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill_TechnicalProcessPhoto()
+        private async Task Fill_TechnicalProcessPhoto()
         {
             Push("Добавьте фото технического процесса");
 
@@ -120,7 +120,7 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill_ReadyNumberPhoto()
+        private async Task Fill_ReadyNumberPhoto()
         {
             Push("Добавьте фото готовой детали");
 
@@ -128,35 +128,35 @@ namespace NaladimBot.Controllers
         }
 
         [Action]
-        async ValueTask Fill_NameNumber()
+        private async Task Fill_NameNumber()
         {
             Push("Введите имя номера");
             await State(new SetNameNumberState());
         }
 
         [Action]
-        async ValueTask Fill_Comment()
+        private async Task Fill_Comment()
         {
             await State(new SetCommentState());
             Push("Напишите комментарий по поводу этого номера");
         }
 
         [Action]
-        async ValueTask Fill_StampPhotoOne()
+        private async Task Fill_StampPhotoOne()
         {
             await State(new SetStampPhotoOneState());
             Push("Добавьте фото штампа");
         }
 
         [Action]
-        async ValueTask Fill_StampPhotoTwo()
+        private async Task Fill_StampPhotoTwo()
         {
             await State(new SetStampPhotoTwoState());
             Push("Добавьте фото штампа");
         }
 
         [State]
-        async ValueTask Fill_StateTechnicalProcessPhoto(SetTechnicalProcessPhotoState state)
+        private async Task Fill_StateTechnicalProcessPhoto(SetTechnicalProcessPhotoState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
             fillState = fillState with
@@ -169,7 +169,7 @@ namespace NaladimBot.Controllers
         }
 
         [State]
-        async ValueTask Fill_StateReadyNumberPhoto(SetReadyNumberPhotoState state)
+        private async Task Fill_StateReadyNumberPhoto(SetReadyNumberPhotoState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
             fillState = fillState with
@@ -182,7 +182,7 @@ namespace NaladimBot.Controllers
         }
 
         [State]
-        async ValueTask Fill_StateStampPhotoOne(SetStampPhotoOneState state)
+        private async Task Fill_StateStampPhotoOne(SetStampPhotoOneState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
             fillState = fillState with
@@ -195,7 +195,7 @@ namespace NaladimBot.Controllers
         }
 
         [State]
-        async ValueTask Fill_StateStampPhotoTwo(SetStampPhotoTwoState state)
+        private async Task Fill_StateStampPhotoTwo(SetStampPhotoTwoState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
             fillState = fillState with
@@ -208,10 +208,8 @@ namespace NaladimBot.Controllers
         }
 
         [State]
-        async ValueTask Fill_StateNameNumber(SetNameNumberState state)
+        private async Task Fill_StateNameNumber(SetNameNumberState state)
         {
-            
-
             var fillState = await GetAState<FillStateNewNumber>();
 
             if (!Context.Update.Message.Text.Contains(','))
@@ -227,10 +225,10 @@ namespace NaladimBot.Controllers
 
                 foreach (var name in listNames)
                 {
-                    fillState.Names.Add(new NameDto(){Name = name });
+                    fillState.Names.Add(new NameDto() { Name = name });
                 }
             }
-            
+
             await AState(fillState);
             await FillNewNumber(fillState);
         }
@@ -238,7 +236,7 @@ namespace NaladimBot.Controllers
 
 
         [State]
-        async ValueTask Fill_StateComment(SetCommentState state)
+        private async Task Fill_StateComment(SetCommentState state)
         {
             var fillState = await GetAState<FillStateNewNumber>();
             fillState = fillState with { Comment = Context.GetSafeTextPayload() };
@@ -255,7 +253,7 @@ namespace NaladimBot.Controllers
         record SetReadyNumberPhotoState;
         record SetTechnicalProcessPhotoState;
 
-        private async void ResponseMessagesByAddNumber(bool? isAdmin)
+        private async Task ResponseMessagesByAddNumberAsync(bool? isAdmin)
         {
             if (isAdmin == true)
             {
